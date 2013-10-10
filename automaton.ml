@@ -1,25 +1,6 @@
-	(* List *)
-
-
-	let forall_in = fun l f -> List.for_all f l 
-	let exists_in = fun l f -> List.exists f l 
-
-
-	let (foreach_in: 'x list -> ('x -> 'y list) -> 'y list) = 
-	fun xs f -> List.fold_right (fun x ys -> (f x) @ ys) xs []
-
-
-	let (do_foreach_in: 't list -> ('t -> unit) -> unit) = 
-	fun l instruction -> List.iter instruction l
-
-
 	(* Set *)
-
-
 	module Set = 
 	(struct
-
-
 	type 't set = 't list
 
 	type 't t = 't set
@@ -36,7 +17,7 @@
 	end)
 
 
-	(* AUTOMATON *)
+	(* automatonOMATON *)
 
 
 	type 'elt set = 'elt Set.t
@@ -55,12 +36,12 @@
 	
 	type 'state transitions = ('state transition) set
 	
-(*	type input = symbol*int *)
+	(*	type input = symbol*int *)
 	
 	 
-	(* automaton *)
+	(* automatonomaton *)
 
-	type 'state automaton = 
+	type 'state automatonomaton = 
 	{ location: 'state set
 	; alphabet: symbol set
 	; initial: 'state set
@@ -69,7 +50,6 @@
 (*	; Input : input list *)
 
 	}
-	
 	
 
 	type 'state selection = 
@@ -91,29 +71,25 @@
 	let (targets_of: ('state transition) list -> 'state set) =
 	fun transitions -> Set.union [] (List.map (fun (_,_,q) -> q) transitions)
 
-
 	let (sources_of: ('state transition) list -> 'state set) =
 	fun transitions -> Set.union [] (List.map (fun (q,_,_) -> q) transitions)
-
 
 	let (states_of: ('state transition) list -> 'state set) = 
 	fun transitions -> Set.union (sources_of transitions) (targets_of transitions) 
 
+	let (number_of_states: 'state automatonomaton -> int) = 
+	fun automaton -> List.length (states_of automaton.transitions)
 
+	let (targets: 'state automatonomaton -> 'state set -> symbol -> 'state set) = 
+	fun automaton states symbol -> targets_of (get_transitions (On [symbol]) (get_transitions (From states) automaton.transitions))  
 
-
-	let (number_of_states: 'state automaton -> int) = 
-	fun aut -> List.length (states_of aut.transitions)
-	
-	
-
-	let (targets: 'state automaton -> 'state set -> symbol -> 'state set) = 
-	fun aut states symbol -> targets_of (get_transitions (On [symbol]) (get_transitions (From states) aut.transitions))  
-
-	let rec is_accepted aut word current_state = match word with
-	| head::tail::[] -> if Set.subseteq (aut.accepting) (targets aut current_state head) then print_string "Recognized"
-				else print_string "Not"
-	|head::tail -> 	match tail with head1::tail1 -> if (int_of_string(head1) < 5) then is_accepted aut tail1 (targets aut current_state head1)
+	let rec is_accepted automaton word current_state = match word with
+	|head::tail::[] -> 	if Set.subseteq (automaton.accepting) (targets automaton current_state head) then 
+							if (int_of_string(tail) < 5) 
+								then print_string "Recognized"
+							else 
+								print_string "Not";
+	|head::tail -> 	match tail with head1::tail1 -> if (int_of_string(head1) < 5) then is_accepted automaton tail1 (targets automaton current_state head)
 													else print_string "Not accept"
 													
 

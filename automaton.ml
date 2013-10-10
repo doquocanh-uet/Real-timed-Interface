@@ -27,7 +27,7 @@
 	type symbol = string
 	let epsilon = ""
 	type alphabet = symbol set
-
+	type input = int * int
 
 	(* transition *)
 
@@ -47,7 +47,7 @@
 	; initial: 'state set
 	; accepting: 'state set
 	; transitions: ('state transition) list
-(*	; Input : input list *)
+	(*	; Input : input list *)
 
 	}
 	
@@ -83,6 +83,7 @@
 	let (targets: 'state automatonomaton -> 'state set -> symbol -> 'state set) = 
 	fun automaton states symbol -> targets_of (get_transitions (On [symbol]) (get_transitions (From states) automaton.transitions))  
 
+	(*
 	let rec is_accepted automaton word current_state = match word with
 	|head::tail::[] -> 	if Set.subseteq (automaton.accepting) (targets automaton current_state head) then 
 							if (int_of_string(tail) < 5) 
@@ -91,8 +92,18 @@
 								print_string "Not";
 	|head::tail -> 	match tail with head1::tail1 -> if (int_of_string(head1) < 5) then is_accepted automaton tail1 (targets automaton current_state head)
 													else print_string "Not accept"
-													
+	*)
+	(* tuple *)
+	let rec is_accepted automaton tuples_list current_state = match tuples_list with
+	|[] -> print_string "Not_found"
+	|(character, value_lt, value_ls)::[] -> if (value_lt < 5) then
+									if Set.subseteq (automaton.accepting) (targets automaton current_state character) then 
+										print_string "Recognized!"
+									else 
+										print_string "Not Recognized!";
+	|(character, value_lt, value_ls)::tl -> if (value_lt < 5) then is_accepted automaton tl (targets automaton current_state character)
+													else print_string "Not accept!"
 
-	
+
 	
 

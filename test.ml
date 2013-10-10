@@ -7,7 +7,7 @@ let odd = {
 };;
 
 
-is_accepted odd ["a";"2";"a";"4";"a";"3"] odd.initial;;
-
+(*is_accepted odd [("a";"2";"a";"4";"a";"3"] odd.initial;;*)
+is_accepted odd [("a", 4, 5); ("a", 3, 6); ("a", 4, 7); ("a", 4, 9)] odd.initial
 
 

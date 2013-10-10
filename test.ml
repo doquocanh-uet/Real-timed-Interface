@@ -1,5 +1,5 @@
 let odd = {
-	name = "odd";
+	location = [0;1];
 	alphabet = ["a"];
 	initial = [0];
 	accepting = [1];
@@ -7,4 +7,7 @@ let odd = {
 };;
 
 
-is_accepted odd ["a";"a";"a";"a";"a";"a"] odd.initial;;
+is_accepted odd ["a";"2";"a";"4";"a";"3";"a";"1"] odd.initial;;
+
+
+

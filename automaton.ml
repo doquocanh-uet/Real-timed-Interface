@@ -94,16 +94,38 @@
 													else print_string "Not accept"
 	*)
 	(* tuple *)
+	
+	let x = ref 0.
+	let sum = ref 0.
+	
 	let rec is_accepted automaton tuples_list current_state = match tuples_list with
 	|[] -> print_string "Not_found"
-	|(character, value_lt, value_ls)::[] -> if (value_lt < 5) then
-									if Set.subseteq (automaton.accepting) (targets automaton current_state character) then 
-										print_string "Recognized!"
-									else 
-										print_string "Not Recognized!";
-	|(character, value_lt, value_ls)::tl -> if (value_lt < 5) then is_accepted automaton tl (targets automaton current_state character)
-													else print_string "Not accept!"
+	|(character, value_lt, value_ls)::[] -> if (value_lt < 10.) then
+												begin
+													x := !x +. 1.;
+													sum:= !sum +. value_lt;
+													if (value_ls = !sum/. !x) then												
+														if Set.subseteq (automaton.accepting) (targets automaton current_state character) then  
+															print_string "Recognize!"
+														else
+															print_string "Not Recognized!"
+													else
+														print_string "Not accept because not satisfied LS!"
+												end
+											else 
+												print_string "Not accept because not satisfied LT!";
+	|(character, value_lt, value_ls)::tl -> if (value_lt < 10.) then 
+												begin
+													x := !x +. 1.;
+													sum:= !sum +. value_lt;
+													if (value_ls = !sum/. !x) then
+														is_accepted automaton tl (targets automaton current_state character)
+													else
+														print_string "Not accept because not satisfied LS!"
+												end
+											else 
+												print_string "Not accept because not satisfied LT!"
 
 
 	
-
+	

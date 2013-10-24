@@ -5,11 +5,11 @@ let average1 = {
 	initial = [0];
 	accepting = [0];
 	transitions = [(0,"a",0)];
-	inputs = [{sym = "a"; inp = 4; out = 4}; {sym = "a"; inp = 6; out = 5};{sym = "a"; inp = 8 ; out = 6}];
+	inputs = [{sym = "a"; inp = 4; out = 4 ; start = 0 ; endl = 2}; {sym = "a"; inp = 6; out = 5 ; start = 2 ; endl = 4};{sym = "a"; inp = 8 ; out = 6; start = 4 ; endl = 6}];
 };;
 check_lt average1 average1.inputs average1.initial 0 1;;
 
-(* Incorrect input satisfy Lt condition but input and output don't fit *)
+(* Incorrect input satisfy Lt condition but input and output don't fit 
 let average2 = {
 	location = [0];
 	alphabet = ["a"];
@@ -33,5 +33,5 @@ let average3 = {
 };;
 
 check_lt average3 average3.inputs average3.initial 0 1;;
-
+*)
 

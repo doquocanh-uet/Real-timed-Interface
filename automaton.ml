@@ -1,3 +1,5 @@
+	open Xml
+	
 	(* Set *)
 	
 	module Set = 
@@ -29,12 +31,23 @@
 	
 	type type_inp = int
 	type type_out = int
+	type ls = {
+		start : int;
+		endl : int;
+	}
 	
 	type input = { 
-			sym: symbol; 
-			inp: type_inp ;
-			out: type_out;
-	}						
+		sym: symbol; 
+		inp: type_inp ;
+		out: type_out;
+		start : int;
+		endl : int;
+	}		
+	
+	let high = 10
+	let low = 3
+	
+	let checkLt x high low = x < high && x > low
 	
 	(* transition *)
 	type 'state transition = 'state * symbol * 'state
@@ -76,20 +89,37 @@
 	let (targets: 'state automaton -> 'state set -> symbol -> 'state set) = 
 	fun automaton states symbol -> targets_of (get_transitions (On [symbol]) (get_transitions (From states) automaton.transitions))  
 
-	
+	let highest = 10
+	let lowest = 3
+	let guardFunc x high low = (x < high && x > low)
+	let isEqualOutput inp out = (inp = out)
+	let clock_start = 0
+	let clock_end = 0
 	(* Checking Lt condition *)	
 	let rec check_lt automaton inputs current_state sum count = match inputs with
-		| e1::[] -> if e1.inp < 10 && e1.inp > 3 then begin 
-															if ((sum + e1.inp)/count == e1.out) then if Set.subseteq (automaton.accepting) (targets automaton current_state e1.sym ) then  
-																								print_string "Recognize!"
-																								else print_string "Not Recognized!"
+		| 	e1::[] -> if (guardFunc e1.inp highest lowest) then begin 
+															if (isEqualOutput ((sum + e1.inp)/count) e1.out) then 
+																if Set.subseteq (automaton.accepting) (targets automaton current_state e1.sym ) then  
+																	print_string "Recognize!"
+																else print_string "Not Recognized!"
 															else  print_string ("Not satisfied Lt at input [" ^e1.sym^ ","^ string_of_int(e1.inp) ^"," ^ string_of_int(e1.out)^"]")
-													end
-		| e1::tail -> if (e1.inp < 10 && e1.inp > 3)  then	begin 
-																if ((sum + e1.inp)/count == e1.out) then begin 
-																						check_lt automaton tail (targets automaton current_state e1.sym) (sum+e1.inp) (count+1)														
-																					end
-																else  print_string ("Not satisfied Lt at input [" ^e1.sym^ ","^ string_of_int(e1.inp) ^"," ^ string_of_int(e1.out)^"]")
-															end
+														end
+		| 	e1::tail -> if (guardFunc e1.inp highest lowest)then begin 
+																	(*Random.self_init ();*)
+	(*																clocks_start = clock + Random.int ( e1.endl - e1.start + 1 ) + e1.start; *)
+																	clock_start = clock_start + Random.int 2;
+																	clock_end = clock_start + Random.int 2;
+																	if (clock_start >= e1.start && clock_end <= e1.endl) then
+																		begin
+																			if (isEqualOutput ((sum + e1.inp)/count) e1.out) then
+																				begin 
+																					check_lt automaton tail (targets automaton current_state e1.sym) (sum+e1.inp) (count+1)														
+																				end
+																			else  print_string ("Not satisfied Lt at input [" ^e1.sym^ ","^
+																					string_of_int(e1.inp) ^"," ^ string_of_int(e1.out)^"]")
+																		end
+																	else print_string ("Not satisfied Ls : clock start = " ^ string_of_int(clock_start) ^ " clock_end = "^ 
+																		string_of_int(clock_end)^ " and " ^ string_of_int(e1.start) ^" "^ string_of_int(e1.endl))
+																end
 						else  print_string ("Not satisfied Lt at input [" ^e1.sym^ ","^ string_of_int(e1.inp) ^"," ^ string_of_int(e1.out)^"]")
 													

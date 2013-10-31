@@ -5,11 +5,14 @@ let average1 = {
 	transitions = [(0,"a",0);(0,"b",1);(1,"a",1);(1,"b",0)];
 	inputs = [{sym = "a"; inp = 4; execution_time = 2}; {sym = "a"; inp = 6; execution_time = 4};{sym = "a"; inp = 8 ; execution_time = 6}];
 	outputs = [{ins = {sym = "a"; inp = 4; execution_time = 2}; out  = 4}];
-	lt_list = [{trans = (0,"a",0) ; guard_formular = "Func1"}; {trans = (0,"b",1); guard_formular = "Func2"} ; {trans = (1,"a",1) ; guard_formular = "Func3"} ; {trans
-	 = (1,"b",0);guard_formular = "Func4"}];
-	ls_list = [{state = 0;timeDesign = {precondition = "condition1" ; time_constraint = (0,3)}} ;
-	 {state = 1 ; timeDesign = {precondition = "condition2" ; time_constraint = (3,6)}}];
+	lt_list = [	{trans = (0,"a",0); guard_formula = "Func1"}; 
+				{trans = (0,"b",1); guard_formula = "Func2"}; 
+				{trans = (1,"a",1); guard_formula = "Func3"}; 
+				{trans = (1,"b",0); guard_formula = "Func4"}];
+	ls_list = [	{state = 0; timeDesign = {precondition = "condition1" ; time_constraint = (0,3)}};
+				{state = 1; timeDesign = {precondition = "condition2" ; time_constraint = (3,6)}}];
 };;
+
 (* Incorrect input satisfy Lt condition but input and output don't fit 
 let average2 = {
 	location = [0];
